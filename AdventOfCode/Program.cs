@@ -7,10 +7,9 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
-            Day2.GetTest();
-            Day2.GetTest2();
-            Day2.GetSolution();
-            Console.Read();
+            Day3.GetTest();
+            Day3.GetSolution();
+            Console.ReadKey();
         }
     }
 }
