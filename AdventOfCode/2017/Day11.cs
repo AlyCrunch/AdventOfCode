@@ -7,27 +7,9 @@ namespace AdventOfCode._2017
 {
     public static class Day11
     {
-        static public void GetTest1()
+        static public void GetTest(int nb = 0)
         {
-            var path = GetFilePath(2017, 11, true, 1);
-            Console.WriteLine($"Answer is {MakeMagic(GetFileToString(path))}");
-        }
-
-        static public void GetTest2()
-        {
-            var path = GetFilePath(2017, 11, true, 2);
-            Console.WriteLine($"Answer is {MakeMagic(GetFileToString(path))}");
-        }
-
-        static public void GetTest3()
-        {
-            var path = GetFilePath(2017, 11, true, 3);
-            Console.WriteLine($"Answer is {MakeMagic(GetFileToString(path))}");
-        }
-
-        static public void GetTest4()
-        {
-            var path = GetFilePath(2017, 11, true, 4);
+            var path = GetFilePath(2017, 11, true, nb);
             Console.WriteLine($"Answer is {MakeMagic(GetFileToString(path))}");
         }
 
