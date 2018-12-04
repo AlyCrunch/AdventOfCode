@@ -16,7 +16,7 @@ namespace AdventOfCode._2017
             Console.WriteLine($"Answer is {MakeMagic(c)}");
         }
 
-        static public int MakeMagic(string c)
+        static private int MakeMagic(string c)
         {
             int sol = 0;
             for (int i = 0; i < c.Length - 1; i++)

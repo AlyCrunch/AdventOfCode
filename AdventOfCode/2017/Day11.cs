@@ -37,7 +37,7 @@ namespace AdventOfCode._2017
             Console.WriteLine($"Answer is {MakeMagic(GetFileToString(path))}");
         }
 
-        static public int MakeMagic(string input)
+        static private int MakeMagic(string input)
         {
             List<string> moves = input.Split(",").ToList();
             List<int> nb_steps = new List<int>();
@@ -63,7 +63,7 @@ namespace AdventOfCode._2017
             return nb_steps.Max();
         }
 
-        static int GetSteps(double N, double E)
+        static private int GetSteps(double N, double E)
         {
 
             var count = Math.Abs(N) + Math.Abs(E);

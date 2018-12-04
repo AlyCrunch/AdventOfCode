@@ -19,7 +19,7 @@ namespace AdventOfCode._2017
             Console.WriteLine($"Answer is {MakeMagic2(255, GetFileToString(path))}");
         }
 
-        static public int MakeMagic(int length, string input)
+        static private int MakeMagic(int length, string input)
         {
 
             List<int> RevertSizes = input.Split(",").Select(x => int.Parse(x)).ToList();
@@ -52,7 +52,7 @@ namespace AdventOfCode._2017
             return Values[finalLength] * Values[finalLength + 1];
         }
 
-        static public int MakeMagic2(int length, string input)
+        static private int MakeMagic2(int length, string input)
         {
             List<int> RevertSizes = input.Split(",").Select(x => int.Parse(x)).ToList();
             int[] Values = Enumerable.Range(0, length + 1).ToArray();
@@ -70,7 +70,7 @@ namespace AdventOfCode._2017
             return Values[0] * Values[1];
         }
 
-        static void ReverseRange(this int[] arr, int index, int size, int length)
+        static private void ReverseRange(this int[] arr, int index, int size, int length)
         {
             List<int> subIndex = new List<int>();
 
