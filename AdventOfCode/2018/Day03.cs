@@ -11,84 +11,76 @@ namespace AdventOfCode._2018
         {
             var file = GetFileToArray(GetFilePath(2018, 3, true));
             Console.WriteLine("Test one :");
-            Console.WriteLine($"Answer part one is {PartOne(file)}");
-            //Console.WriteLine($"Answer part two is {PartTwo(file)}");
+            Console.WriteLine(Answer(file));
         }
-        
+
         public static void GetSolution()
         {
             var file = GetFileToArray(GetFilePath(2018, 3));
             Console.WriteLine("\nSolution :");
-            Console.WriteLine($"Answer part one is {PartOne(file)}");
-            //Console.WriteLine($"Answer part two is {PartTwo(file)}");
+            Console.WriteLine(Answer(file));
         }
 
-        public static object PartOne(string[] inputs)
+        public static object Answer(string[] inputs)
         {
-            List<Fabric> fabrics = new List<Fabric>();
-            foreach(var input in inputs)
+            Dictionary<(int X, int Y), HashSet<int>> fabrics = new Dictionary<(int X, int Y), HashSet<int>>();
+            HashSet<int> all_claims = new HashSet<int>();
+            foreach (var input in inputs)
             {
-                fabrics.Add(new Fabric(input));
+                Fabric fabric = new Fabric(input);
+                all_claims.Add(fabric.ID);
+                foreach (var (X, Y) in fabric.Coords)
+                {
+                    if (fabrics.ContainsKey((X, Y)))
+                        fabrics[(X, Y)].Add(fabric.ID);
+                    else
+                        fabrics.Add((X, Y), new HashSet<int>() { fabric.ID });
+                }
             }
 
-            var allFabrics = fabrics.SelectMany(x => x.Coords).ToList();
-            var g_fabrics = allFabrics.GroupBy(x => x)
-                                      .Where(g => g.Count() > 1)
-                                      .Select(y => new { Element = y.Key, Counter = y.Count() })
-                                      .ToList();
-
-            return g_fabrics.Count();
-        }
-
-        public static object PartTwo(string[] input)
-        {
-            return 0;
+            var square_inches = fabrics.Count(x => x.Value.Count > 1);
+            var claimed_id = fabrics.Where(x => x.Value.Count > 1)
+                .Select(x => x.Value.Select(y => y))
+                .ToList()
+                .SelectMany(x => x).Distinct().ToHashSet();
+            var ID_claimed_not_overlapped = all_claims.Except(claimed_id).First();
+            return $"Overlaped inches sq. : {square_inches} & not overlapped ID of claim : {ID_claimed_not_overlapped}";
         }
     }
 
+    //Pretty useless class
     public class Fabric
     {
-        public Coord Origin { get; set; }
-        public Coord Size { get; set; }
-        //public List<Coord> Coords { get; set; }
-        public List<Tuple<int,int>> Coords { get; set; }
+        public int ID { get; set; }
+        public (int X, int Y) Origin { get; set; }
+        public (int X, int Y) Size { get; set; }
+        public List<(int X, int Y)> Coords { get; set; }
 
         public Fabric(string str) //#1 @ 1,3: 4x4
-        {            
+        {
+
+            ID = int.Parse(str.Split(" @ ")[0].Split("#", StringSplitOptions.RemoveEmptyEntries).First());
             string[] useful = str.Split(" @ ")[1].Split(": ");
 
-            string origin = useful[0];
-            string size = useful[1];
-
-            Origin = new Coord(origin.Split(','));
-            Size = new Coord(size.Split('x'));
-            //Coords = CalculateAllCoords(Origin, Size);
+            Origin = GetCoordFromString(useful[0].Split(','));
+            Size = GetCoordFromString(useful[1].Split('x'));
             Coords = CalculateAllCoordsT(Origin, Size);
         }
 
-        private List<Tuple<int, int>> CalculateAllCoordsT(Coord origin, Coord size)
+        public (int, int) GetCoordFromString(string[] arr)
         {
-            List<Tuple<int, int>> coords = new List<Tuple<int, int>>();
-
-            for (int y = 0; y < size.Y; y++)
-            {
-                for (int x = 0; x < size.X; x++)
-                {
-                    coords.Add( new Tuple<int, int>(x + origin.X, y + origin.Y));
-                }
-            }
-
-            return coords;
+            return (int.Parse(arr[0]), int.Parse(arr[1]));
         }
-        private List<Coord> CalculateAllCoords(Coord origin, Coord size)
+
+        private List<(int X, int Y)> CalculateAllCoordsT((int X, int Y) origin, (int X, int Y) size)
         {
-            List<Coord> coords = new List<Coord>();
+            List<(int X, int Y)> coords = new List<(int X, int Y)>();
 
             for (int y = 0; y < size.Y; y++)
             {
                 for (int x = 0; x < size.X; x++)
                 {
-                    coords.Add(new Coord(x + origin.X, y + origin.Y));
+                    coords.Add((x + origin.X, y + origin.Y));
                 }
             }
 
@@ -96,22 +88,4 @@ namespace AdventOfCode._2018
         }
     }
 
-    public class Coord
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-
-        public Coord(string[] arr)
-        {
-            X = int.Parse(arr[0]);
-            Y = int.Parse(arr[1]);
-        }
-
-        public Coord(int x, int y)
-        {
-            X = x;
-            Y = y;
-        }
-    }
-    
 }
