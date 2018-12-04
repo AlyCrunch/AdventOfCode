@@ -6,17 +6,7 @@ namespace AdventOfCode._2018
 {
     public static class Day1
     {
-        static public void GetTest()
-        {
-            //Console.WriteLine($"Answer is {MakeMagic(test)}");
-        }
-
-        public static void GetSolution()
-        {
-            var file = GetFileToArray(GetFilePath(2018, 1));
-            Console.WriteLine($"Answer part one is {PartOne(file)}");
-            Console.WriteLine($"Answer part two is {PartTwo(file)}");
-        }
+        public static void GetSolution(string[] file) =>Console.WriteLine($"Answer part one is {PartOne(file)} & Answer part two is {PartTwo(file)}");
 
         static int PartOne(string[] inputs)
         {

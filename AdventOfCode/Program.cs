@@ -1,4 +1,4 @@
-﻿using AdventOfCode._2018;
+﻿
 using System;
 
 namespace AdventOfCode
@@ -7,8 +7,8 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
-            Day3.GetTest();
-            Day3.GetSolution();
+            __2017.Day13.GetTest();
+            //_2017.Day13.GetSolution();
             Console.ReadKey();
         }
     }
