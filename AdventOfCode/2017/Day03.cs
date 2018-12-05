@@ -6,10 +6,10 @@ namespace AdventOfCode._2017
     {
         public static void GetSolution(int nb)
         {
-            Console.WriteLine($"Answer is {MakeMagic(nb)}");
+            Console.WriteLine($"Answer is {Part1(nb)}");
         }
 
-        static private int MakeMagic(int nb)
+        static private int Part1(int nb)
         {
             var coord = new Coord();
             int main = 1;

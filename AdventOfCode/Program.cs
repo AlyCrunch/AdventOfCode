@@ -6,19 +6,15 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
-            //_2017.Day2.GetTest();
             Console.WriteLine("--- Test ---");
-            _2017.Day2.GetTest(2);
+            _2018.Day5.GetTest("dabAcCaCBAcCcaDA");
+
             Console.WriteLine("\n--- Solution ---");
-            _2017.Day2.GetSolution();
-            
-            //_2017.Day1.GetTest("1212");
-            //_2017.Day1.GetTest("1221");
-            //_2017.Day1.GetTest("123425");
-            //_2017.Day1.GetTest("123123");
-            //_2017.Day1.GetTest("12131415");
+            _2018.Day5.GetSolution();
 
             Console.ReadKey();
+
+            //9564 too high
         }
     }
 }
