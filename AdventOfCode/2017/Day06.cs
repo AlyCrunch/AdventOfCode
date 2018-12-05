@@ -7,31 +7,47 @@ namespace AdventOfCode._2017
 {
     public static class Day6
     {
-        static public void GetTest()
+        public static void GetTest() => Execute(true);
+
+        public static void GetTest(string str) => Console.WriteLine($"Answer is part 1 : {Part1(str)} & part 2 : {Part2(str)}");
+
+        public static void GetSolution() => Execute();
+
+        private static void Execute(bool test = false, int nbTest = 0)
         {
-            var path = GetFilePath(2017, 6, true);
-            Console.WriteLine($"Answer is {GetFileToString(path).MakeMagic()}");
+            var sample = GetFileToString(GetFilePath(2017, 6, test, nbTest));
+            Console.WriteLine($"Answer is part 1 : {Part1(sample)} & part 2 : {Part2(sample)}");
         }
 
-        public static void GetSolution()
+        private static int Part1(string sample)
         {
-            var path = GetFilePath(2017, 6);
-            Console.WriteLine($"Answer is {GetFileToString(path).MakeMagic()}");
+            if (States == null) States = GetMemoryBank(sample);
+
+            return States.Count - 1;
         }
 
-        static private int MakeMagic(this string file)
+        private static object Part2(string sample)
         {
-            var memoryBlocks = file
+
+            if (States == null) States = GetMemoryBank(sample);
+            var test = States.Where(x => x.State.Equals(States.Last().State));
+
+            return test.Last().Cycle - test.First().Cycle;
+        }
+        
+        private static List<(int Cycle, string State)> GetMemoryBank(string sample)
+        {
+            var memoryBlocks = sample
                    .Split(new string[] { "\t", " " }, StringSplitOptions.RemoveEmptyEntries)
                    .Select(int.Parse).ToArray();
 
-            List<string> states = new List<string>();
+            List<(int Cycle, string State)> states = new List<(int Cycle, string State)>();
             int cycles = 0;
             int lengthMB = memoryBlocks.Length;
 
             do
             {
-                states.Add(string.Join("", memoryBlocks));
+                states.Add((cycles, string.Join("", memoryBlocks)));
                 int max = memoryBlocks.Max();
                 int index = Array.IndexOf(memoryBlocks, max);
 
@@ -47,9 +63,17 @@ namespace AdventOfCode._2017
 
                 cycles++;
             }
-            while (!states.Contains(string.Join("", memoryBlocks)));
+            while (!states.Any(x => x.State.Equals(string.Join("", memoryBlocks))));
+            states.Add((cycles, string.Join("", memoryBlocks)));            
 
-            return cycles;
+            return states;
+        }
+
+        private static List<(int Cycle, string State)> _states;
+        private static List<(int Cycle, string State)> States
+        {
+            get { return _states; }
+            set { _states = value; }
         }
     }
 }

@@ -7,10 +7,10 @@ namespace AdventOfCode
         static void Main(string[] args)
         {
             Console.WriteLine("--- Test ---");
-            _2017.Day5.GetTest();
+            _2017.Day6.GetTest("0	2	7	0");
 
             Console.WriteLine("--- Solution ---");
-            _2017.Day5.GetSolution();
+            _2017.Day6.GetSolution();
 
             Console.ReadKey();
         }
