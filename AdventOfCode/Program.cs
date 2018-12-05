@@ -6,11 +6,12 @@ namespace AdventOfCode
     {
         static void Main(string[] args)
         {
-            //Console.WriteLine("--- Test ---");
-            //_2018.Day5.GetTest("dabAcCaCBAcCcaDA");
+            Console.WriteLine("--- Test ---");
+            _2017.Day4.GetTest();
+            _2017.Day4.GetTest(2);
 
             Console.WriteLine("--- Solution ---");
-            _2017.Day3.GetSolution(312051);
+            _2017.Day4.GetSolution();
 
             Console.ReadKey();
         }
