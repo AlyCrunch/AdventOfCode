@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace AdventOfCode._2017
 {
@@ -17,6 +18,7 @@ namespace AdventOfCode._2017
             bool addOne = false;
             int moves = 0;
             int movesMax = 1;
+            int savedValue = 0;            
 
             do
             {
@@ -33,11 +35,12 @@ namespace AdventOfCode._2017
                     moves = 0;
                     addOne = !addOne;
                 }
-
+                if (savedValue == 0 && coord.LastValue > nb)
+                    savedValue = coord.LastValue;
             }
             while (main < nb);
 
-            Console.WriteLine($"{main} : x {coord.X} / y {coord.Y} - Steps : {Math.Abs(coord.Y) + Math.Abs(coord.X)}");
+            Console.WriteLine($"{main} : x {coord.X} / y {coord.Y} - Steps : {Math.Abs(coord.Y) + Math.Abs(coord.X)} and part 2 : {savedValue}");
 
             return Math.Abs(coord.Y) + Math.Abs(coord.X);
         }
@@ -51,6 +54,10 @@ namespace AdventOfCode._2017
         public int X { get; set; }
         public int Y { get; set; }
 
+        public Dictionary<(int X, int Y), int> ValuesMemory { get; set; } = new Dictionary<(int X, int Y), int>();
+
+        public int LastValue { get; set; }
+
         public void NextDir()
         {
             if (Direction == 3) Direction = 0;
@@ -59,6 +66,25 @@ namespace AdventOfCode._2017
 
         public void Move()
         {
+            int val = 0;
+            if (X == 0 && Y == 0) val = 1;
+            else
+            {
+                if (ValuesMemory.ContainsKey((X, Y + 1))) val += ValuesMemory[(X, Y + 1)];
+                if (ValuesMemory.ContainsKey((X, Y - 1))) val += ValuesMemory[(X, Y - 1)];
+
+                if (ValuesMemory.ContainsKey((X + 1, Y))) val += ValuesMemory[(X + 1, Y)];
+                if (ValuesMemory.ContainsKey((X + 1, Y + 1))) val += ValuesMemory[(X + 1, Y + 1)];
+                if (ValuesMemory.ContainsKey((X + 1, Y - 1))) val += ValuesMemory[(X + 1, Y - 1)];
+
+                if (ValuesMemory.ContainsKey((X - 1, Y))) val += ValuesMemory[(X - 1, Y)];
+                if (ValuesMemory.ContainsKey((X - 1, Y + 1))) val += ValuesMemory[(X - 1, Y + 1)];
+                if (ValuesMemory.ContainsKey((X - 1, Y - 1))) val += ValuesMemory[(X - 1, Y - 1)];
+            }
+
+            LastValue = val;
+            ValuesMemory.Add((X, Y), LastValue);
+
             switch (Direction)
             {
                 case 0: X++; break;
