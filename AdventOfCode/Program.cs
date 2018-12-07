@@ -11,7 +11,6 @@ namespace AdventOfCode
 
             Console.WriteLine("--- Solution ---");
             _2018.Day6.GetSolution();
-
             Console.ReadKey();
         }
     }
