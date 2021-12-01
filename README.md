@@ -1,4 +1,4 @@
-![Continuous Integration 👮‍♀️](https://github.com/AlyCrunch/AdventOfCode2021/workflows/test.yml/badge.svg)
+![Continuous Integration 👮‍♀️](https://github.com/AlyCrunch/AdventOfCode2021/actions/workflows/test.yml/badge.svg)
 
 
 # AdventOfCode2021
