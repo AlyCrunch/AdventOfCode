@@ -4,12 +4,11 @@ namespace Days
 {
     public static class Dive
     {
-        public static (string, int) StringToCommand(string str)
-            => str.Split(' ').Aggregate(("", 0), (cmd, item)
-                => cmd = string.IsNullOrEmpty(cmd.Item1) ? (item, cmd.Item2) : (cmd.Item1, int.Parse(item)));
-
         public static IEnumerable<(string name, int nb)> FormatData(IEnumerable<string> cmds)
-            => cmds.Select(x => StringToCommand(x));
+            => cmds.Select(x => x.Split(' ')
+                                 .Aggregate(("", 0), (cmd, item)
+                                    => cmd = string.IsNullOrEmpty(cmd.Item1) ? 
+                                 (item, cmd.Item2) : (cmd.Item1, int.Parse(item))));
 
         public static (int depth, int hPosition) GetFinalPosition(IEnumerable<string> datas)
             => FormatData(datas)
