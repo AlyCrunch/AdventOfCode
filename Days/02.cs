@@ -5,25 +5,24 @@ namespace Days
     public static class Dive
     {
         public static IEnumerable<(string name, int nb)> FormatData(IEnumerable<string> cmds)
-            => cmds.Select(x => x.Split(' ')
-                                 .Aggregate(("", 0), (cmd, item)
-                                    => cmd = string.IsNullOrEmpty(cmd.Item1) ? 
-                                 (item, cmd.Item2) : (cmd.Item1, int.Parse(item))));
+            => cmds.Select(x => { var s = x.Split(' '); return (s[0],int.Parse(s[1])); });
 
         public static (int depth, int hPosition) GetFinalPosition(IEnumerable<string> datas)
             => FormatData(datas)
-                .Aggregate((depth: 0, hPosition: 0), (sum, item) =>
-                ((item.name != "forward") ? sum.depth + ((item.name != "up") ? item.nb : item.nb * -1) : sum.depth,
-                (item.name == "forward") ? sum.hPosition + item.nb : sum.hPosition));
+                .Aggregate((depth: 0, hPosition: 0), (sum, item) => item.name switch
+                {
+                    "forward" => (sum.depth, sum.hPosition + item.nb),
+                    "up" => (sum.depth - item.nb, sum.hPosition),
+                    "down" => (sum.depth + item.nb, sum.hPosition)
+                });
 
         public static (int depth, int hPosition, int aim) GetFinalPositionWithAim(IEnumerable<string> datas)
             => FormatData(datas)
-                .Aggregate((depth: 0, hPosition: 0, aim: 0), (sum, item) =>
-                       (
-                       (item.name == "forward") ? sum.depth + sum.aim * item.nb : sum.depth,
-                       (item.name == "forward") ? item.nb + sum.hPosition : sum.hPosition,
-                       (item.name != "forward") ? sum.aim + ((item.name != "up") ? item.nb : item.nb * -1) : sum.aim
-                       ));
-
+                .Aggregate((depth: 0, hPosition: 0, aim: 0), (sum, item) => item.name switch
+                {
+                    "forward" => (sum.depth + sum.aim * item.nb, sum.hPosition + item.nb, sum.aim),
+                    "up" => (sum.depth, sum.hPosition, sum.aim - item.nb),
+                    "down" => (sum.depth, sum.hPosition, sum.aim + item.nb)
+                });
     }
 }
