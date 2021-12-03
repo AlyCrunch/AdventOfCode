@@ -6,7 +6,7 @@ namespace Days
     {
         public static (string name, int nb) FormatData(string cmd)
         { 
-            var s = x.Split(' ');
+            var s = cmd.Split(' ');
             return (s[0], int.Parse(s[1])); 
         }
 
