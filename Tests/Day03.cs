@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using Days;
+using System.Linq;
 
 namespace Tests
 {
@@ -35,15 +36,20 @@ namespace Tests
             var c = BinaryDiagnostic.GetConsumption(dataset);
             Assert.Equal(4191876, c);
         }
-
+        
         [Fact]
         public void SecondStarExample()
         {
+            var o = BinaryDiagnostic.GetLifeSupportRating(test);
+            Assert.Equal(230, o);
         }
 
         [Fact]
         public void SecondStarSolution()
         {
+            var dataset = Helpers.ReadFile("Inputs\\03.txt");
+            var o = BinaryDiagnostic.GetLifeSupportRating(dataset);
+            Assert.Equal(3414905, o);
         }
     }
 }
