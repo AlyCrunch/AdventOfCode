@@ -30,7 +30,7 @@ namespace Tests
         [Fact]
         public void FirstStarExample()
         {
-            var x = GiantSquid.GetSumUnmarked(test);
+            var x = GiantSquid.GetFirstWinner(test);
             Assert.Equal(4512, x);
         }
 
@@ -38,7 +38,7 @@ namespace Tests
         public void FirstStarSolution()
         {
             var dataset = Helpers.ReadFile("Inputs\\04.txt");
-            var x = GiantSquid.GetSumUnmarked(dataset);
+            var x = GiantSquid.GetFirstWinner(dataset);
             Assert.Equal(58374, x);
         }
 
