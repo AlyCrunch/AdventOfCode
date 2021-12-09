@@ -15,11 +15,6 @@ namespace Tests
         };
 
         [Fact]
-        public void Debug()
-        {
-        }
-
-        [Fact]
         public void FirstStarExample()
         {
             var x = SmokeBasin.GetRiskLevel(test);
@@ -37,11 +32,16 @@ namespace Tests
         [Fact]
         public void SecondStarExample()
         {
+            var x = SmokeBasin.GetAllBasins(test);
+            Assert.Equal(1134, x);
         }
 
         [Fact]
         public void SecondStarSolution()
         {
+            var dataset = Helpers.ReadFile("Inputs\\09.txt");
+            var x = SmokeBasin.GetAllBasins(dataset);
+            Assert.Equal(1397760, x);
         }
     }
 }

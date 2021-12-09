@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Days
+﻿namespace Days
 {
     public static class SmokeBasin
     {
         public static int GetRiskLevel(string[] raw)
-            => GetLowPoint(GetMap(raw)).Select(x => x.height + 1).Sum();
-        public static IEnumerable<(int x, int y, int height)> GetLowPoint(int[][] map)
+            => GetLowPoints(GetMap(raw)).Select(x => x.height + 1).Sum();
+        private static IEnumerable<(int x, int y, int height)> GetLowPoints(int[][] map)
         {
             var lowPoints = new List<(int x, int y, int height)>();
 
@@ -25,16 +19,64 @@ namespace Days
             return lowPoints;
         }
 
-        public static bool IsLowPoint(int[][] map, int x, int y)
+        private static bool IsLowPoint(int[][] map, int x, int y)
             => map[x][y] < GetValue(map, x - 1, y)
             && map[x][y] < GetValue(map, x + 1, y)
             && map[x][y] < GetValue(map, x, y - 1)
             && map[x][y] < GetValue(map, x, y + 1);
 
-        public static int GetValue(int[][] map, int x, int y)
+        private static int GetValue(int[][] map, int x, int y)
             => (x < 0 || y < 0 || x >= map.Length || y >= map[x].Length) ? 10 : map[x][y];
 
-        public static int[][] GetMap(string[] raw)
+        public static int GetAllBasins(string[] raw)
+        {
+            var map = GetMap(raw);
+            List<int> basins = new();
+            Parallel.ForEach(GetLowPoints(map), basin => basins.Add(GetBasin(map, basin)));
+            return basins.OrderByDescending(x => x).Take(3).Aggregate(1,(mult, item) => mult * item);
+        }
+
+        private static int GetBasin(int[][] map, (int x, int y, int height) lowPoint)
+        {
+            var alreadyDone = new List<(int x, int y)>();
+            var toTest = new List<(int x, int y)>() { (lowPoint.x, lowPoint.y) };
+
+            do
+            {
+                var testedPoint = (toTest.First().x, toTest.First().y);
+                var points = GetAllHorizontalAndVertical(map, testedPoint.x, testedPoint.y);
+                alreadyDone.Add(testedPoint);
+                toTest.Remove(testedPoint);
+                toTest.AddRange(points.Except(alreadyDone));
+            }
+            while (toTest.Count > 0);
+            return alreadyDone.Distinct().Count();
+        }
+
+        private static IEnumerable<(int x, int y)> GetAllHorizontalAndVertical(int[][] map, int x, int y)
+        {
+            var basin = new List<(int x, int y)>();
+            basin.AddRange(GetOneDirection(map, x, y, true, 1));
+            basin.AddRange(GetOneDirection(map, x, y, true, -1));
+            basin.AddRange(GetOneDirection(map, x, y, false, 1));
+            basin.AddRange(GetOneDirection(map, x, y, false, -1));
+
+            return basin.Distinct();
+        }
+
+        private static IEnumerable<(int x, int y)> GetOneDirection(int[][] map, int x, int y, bool isX = true, int mult = 1)
+        {
+            var basin = new List<(int x, int y)>();
+            while (GetValue(map, x, y) < 9)
+            {
+                basin.Add((x, y));
+                x = (isX) ? x + mult : x;
+                y = (isX) ? y : y + mult;
+            }
+            return basin;
+        }
+
+        private static int[][] GetMap(string[] raw)
             => raw.Select(r => r.Select(x => x - '0').ToArray()).ToArray();
     }
 }
