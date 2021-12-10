@@ -16,7 +16,8 @@ namespace Days
                 {
                     "forward" => (sum.depth, sum.hPosition + item.nb),
                     "up" => (sum.depth - item.nb, sum.hPosition),
-                    "down" => (sum.depth + item.nb, sum.hPosition)
+                    "down" => (sum.depth + item.nb, sum.hPosition),
+                    _ => throw new Exception("Invalid direction")
                 });
 
         public static (int depth, int hPosition, int aim) GetFinalPositionWithAim(IEnumerable<string> datas)
@@ -25,7 +26,8 @@ namespace Days
                 {
                     "forward" => (sum.depth + sum.aim * item.nb, sum.hPosition + item.nb, sum.aim),
                     "up" => (sum.depth, sum.hPosition, sum.aim - item.nb),
-                    "down" => (sum.depth, sum.hPosition, sum.aim + item.nb)
+                    "down" => (sum.depth, sum.hPosition, sum.aim + item.nb),
+                    _ => throw new Exception("Invalid direction")
                 });
     }
 }
