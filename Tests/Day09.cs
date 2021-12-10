@@ -1,5 +1,7 @@
 ﻿using Xunit;
 using Days;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Tests
 {
