@@ -1,5 +1,5 @@
 ﻿using Xunit;
-using Days;
+using Days._2021;
 
 namespace Tests._2021
 {
@@ -31,7 +31,7 @@ namespace Tests._2021
         [Fact]
         public void FirstStarSolution()
         {
-            var dataset = Helpers.ReadFile("Inputs\\2021\\03.txt");
+            var dataset = Days.Helpers.ReadFile("Inputs\\2021\\03.txt");
             var c = BinaryDiagnostic.GetConsumption(dataset);
             Assert.Equal(4191876, c);
         }
@@ -46,7 +46,7 @@ namespace Tests._2021
         [Fact]
         public void SecondStarSolution()
         {
-            var dataset = Helpers.ReadFile("Inputs\\2021\\03.txt");
+            var dataset = Days.Helpers.ReadFile("Inputs\\2021\\03.txt");
             var o = BinaryDiagnostic.GetLifeSupportRating(dataset);
             Assert.Equal(3414905, o);
         }

@@ -1,5 +1,5 @@
 ﻿using Xunit;
-using Days;
+using Days._2021;
 
 namespace Tests._2021
 {
@@ -24,7 +24,7 @@ namespace Tests._2021
         [Fact]
         public void FirstStarSolution()
         {
-            var dataset = Helpers.ReadFile("Inputs\\2021\\09.txt");
+            var dataset = Days.Helpers.ReadFile("Inputs\\2021\\09.txt");
             var x = SmokeBasin.GetRiskLevel(dataset);
             Assert.Equal(462, x);
         }
@@ -39,7 +39,7 @@ namespace Tests._2021
         [Fact]
         public void SecondStarSolution()
         {
-            var dataset = Helpers.ReadFile("Inputs\\2021\\09.txt");
+            var dataset = Days.Helpers.ReadFile("Inputs\\2021\\09.txt");
             var x = SmokeBasin.GetAllBasins(dataset);
             Assert.Equal(1397760, x);
         }

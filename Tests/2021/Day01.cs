@@ -1,5 +1,6 @@
 using Xunit;
-using Days;
+using Days._2021;
+
 
 namespace Tests._2021
 {
@@ -17,7 +18,7 @@ namespace Tests._2021
         [Fact]
         public void FirstStarSolution()
         {
-            var datas = Helpers.ReadFileAsInteger("Inputs\\2021\\01.txt");
+            var datas = Days.Helpers.ReadFileAsInteger("Inputs\\2021\\01.txt");
             var result = SonarSweep.GetDepthNumberInc(datas);
             Assert.Equal(1624, result);
         }
@@ -34,7 +35,7 @@ namespace Tests._2021
         [Fact]
         public void SecondStarSolution()
         {
-            var datas = Helpers.ReadFileAsInteger("Inputs\\2021\\01.txt");
+            var datas = Days.Helpers.ReadFileAsInteger("Inputs\\2021\\01.txt");
             var result = SonarSweep.GetDepthNumberIncGroupedBy3(datas);
             Assert.Equal(1653, result);
         }

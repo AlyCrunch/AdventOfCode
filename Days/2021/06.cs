@@ -1,4 +1,4 @@
-﻿namespace Days
+﻿namespace Days._2021
 {
     public static class Lanternfish
     {

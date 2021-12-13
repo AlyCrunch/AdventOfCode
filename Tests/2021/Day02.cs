@@ -1,5 +1,5 @@
 ﻿using Xunit;
-using Days;
+using Days._2021;
 
 namespace Tests._2021
 {
@@ -25,7 +25,7 @@ namespace Tests._2021
         [Fact]
         public void FirstStarSolution()
         {
-            var dataset = Helpers.ReadFile("Inputs\\2021\\02.txt");
+            var dataset = Days.Helpers.ReadFile("Inputs\\2021\\02.txt");
             var (depth, hPosition) = Dive.GetFinalPosition(dataset);
             Assert.Equal(1507611, depth * hPosition);
         }
@@ -40,7 +40,7 @@ namespace Tests._2021
         [Fact]
         public void SecondStarSolution()
         {
-            var dataset = Helpers.ReadFile("Inputs\\2021\\02.txt");
+            var dataset = Days.Helpers.ReadFile("Inputs\\2021\\02.txt");
             var (depth, hPosition, _) = Dive.GetFinalPositionWithAim(dataset);
             Assert.Equal(1880593125, depth * hPosition);
         }

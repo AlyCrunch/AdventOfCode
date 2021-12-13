@@ -1,5 +1,5 @@
 ﻿using Xunit;
-using Days;
+using Days._2021;
 
 namespace Tests._2021
 {
@@ -17,7 +17,7 @@ namespace Tests._2021
         [Fact]
         public void FirstStarSolution()
         {
-            var dataset = Helpers.ReadSingleLineFile("Inputs\\2021\\07.txt");
+            var dataset = Days.Helpers.ReadSingleLineFile("Inputs\\2021\\07.txt");
             var x = TheTreacheryofWhales.GetLeastFuelPossible(dataset);
             Assert.Equal(355521, x);
         }
@@ -32,7 +32,7 @@ namespace Tests._2021
         [Fact]
         public void SecondStarSolution()
         {
-            var dataset = Helpers.ReadSingleLineFile("Inputs\\2021\\07.txt");
+            var dataset = Days.Helpers.ReadSingleLineFile("Inputs\\2021\\07.txt");
             var x = TheTreacheryofWhales.GetLeastFuelPossibleInc(dataset);
             Assert.Equal(100148777, x);
         }

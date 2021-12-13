@@ -1,5 +1,5 @@
 ﻿using Xunit;
-using Days;
+using Days._2021;
 
 namespace Tests._2021
 {
@@ -29,7 +29,7 @@ namespace Tests._2021
         [Fact]
         public void FirstStarSolution()
         {
-            var dataset = Helpers.ReadFile("Inputs\\2021\\11.txt");
+            var dataset = Days.Helpers.ReadFile("Inputs\\2021\\11.txt");
             var y = DumboOctopus.GetCountOfFlashes(dataset);
             Assert.Equal(1702, y);
         }
@@ -44,7 +44,7 @@ namespace Tests._2021
         [Fact]
         public void SecondStarSolution()
         {
-            var dataset = Helpers.ReadFile("Inputs\\2021\\11.txt");
+            var dataset = Days.Helpers.ReadFile("Inputs\\2021\\11.txt");
             var y = DumboOctopus.GetStepAllFlash(dataset);
             Assert.Equal(251, y);
         }
