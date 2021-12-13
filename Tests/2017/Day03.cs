@@ -19,20 +19,22 @@ namespace Tests._2017
         [Fact]
         public void FirstStarSolution()
         {
-            //var x = SpiralMemory.GetSteps(input);
-            //Assert.Equal(430, x);
+            var x = SpiralMemory.GetSteps(input);
+            Assert.Equal(430, x);
         }
 
         [Fact]
         public void SecondStarExample()
         {
+            Assert.Equal(54, SpiralMemory.GetFirstLargerValue(26));
+            Assert.Equal(806, SpiralMemory.GetFirstLargerValue(747));
         }
 
         [Fact]
         public void SecondStarSolution()
         {
-            //var x = SpiralMemory.GetSteps(input);
-            //Assert.Equal(312453, x);
+            var x = SpiralMemory.GetFirstLargerValue(input);
+            Assert.Equal(312453, x);
         }
     }
 }
