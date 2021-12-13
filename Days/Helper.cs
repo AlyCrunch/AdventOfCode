@@ -16,5 +16,7 @@ namespace Days
             => Array.ConvertAll(File.ReadAllLines(filename), s => (T)Convert.ChangeType(s, typeof(T)));
         public static string ReadSingleLineFile(string fileName)
             => File.ReadLines(fileName).First();
+        public static void SaveInFile(string path, string[] lines)
+            => File.WriteAllLines(path, lines);
     }
 }
