@@ -1,4 +1,4 @@
-﻿using Days;
+﻿using Days._2017;
 using Xunit;
 
 namespace Tests._2017
@@ -17,7 +17,7 @@ namespace Tests._2017
         [Fact]
         public void FirstStarSolution()
         {
-            var x = InverseCaptcha.GetCaptcha(Helpers.ReadSingleLineFile("Inputs\\2017\\01.txt"));
+            var x = InverseCaptcha.GetCaptcha(Days.Helpers.ReadSingleLineFile("Inputs\\2017\\01.txt"));
             Assert.Equal(1089, x);
         }
 
@@ -34,7 +34,7 @@ namespace Tests._2017
         [Fact]
         public void SecondStarSolution()
         {
-            var x = InverseCaptcha.GetNewCaptcha(Helpers.ReadSingleLineFile("Inputs\\2017\\01.txt"));
+            var x = InverseCaptcha.GetNewCaptcha(Days.Helpers.ReadSingleLineFile("Inputs\\2017\\01.txt"));
             Assert.Equal(1156, x);
         }
     }

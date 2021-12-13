@@ -1,4 +1,4 @@
-﻿using Days;
+﻿using Days._2017;
 using Xunit;
 
 namespace Tests._2017
@@ -8,7 +8,7 @@ namespace Tests._2017
         [Fact]
         public void FirstStarSolution()
         {
-            var dataset = Helpers.ReadFile("Inputs\\2017\\04.txt");
+            var dataset = Days.Helpers.ReadFile("Inputs\\2017\\04.txt");
             var x = HighEntropyPassphrases.CountValidPassphrases(dataset);
             Assert.Equal(455, x);
         }
@@ -16,7 +16,7 @@ namespace Tests._2017
         [Fact]
         public void SecondStarSolution()
         {
-            var dataset = Helpers.ReadFile("Inputs\\2017\\04.txt");
+            var dataset = Days.Helpers.ReadFile("Inputs\\2017\\04.txt");
             var x = HighEntropyPassphrases.CountNewValidPassphrases(dataset);
             Assert.Equal(186, x);
         }

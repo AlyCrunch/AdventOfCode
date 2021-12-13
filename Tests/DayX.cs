@@ -13,6 +13,7 @@ namespace Tests
         [Fact]
         public void FirstStarSolution()
         {
+            //var dataset = Days.Helpers.ReadFile("Inputs\\year\\day.txt");
         }
 
         [Fact]

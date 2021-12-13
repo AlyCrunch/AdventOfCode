@@ -1,4 +1,4 @@
-﻿namespace Days
+﻿namespace Days._2017
 {
     public static class SpiralMemory
     {

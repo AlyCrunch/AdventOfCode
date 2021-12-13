@@ -1,4 +1,4 @@
-﻿namespace Days
+﻿namespace Days._2017
 {
     public static class MazeTwistyTrampolines
     {
@@ -21,7 +21,7 @@
             return moves;
         }
 
-        private static int GetStepsOffset(string[] lines)
+        public static int GetStepsOffset(string[] lines)
         {
             int[] maze = lines.Select(int.Parse).ToArray();
 

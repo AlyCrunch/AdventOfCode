@@ -1,4 +1,4 @@
-﻿using Days;
+﻿using Days._2017;
 using Xunit;
 
 namespace Tests._2017
@@ -20,7 +20,7 @@ namespace Tests._2017
         [Fact]
         public void FirstStarSolution()
         {
-            var x = CorruptionChecksum.GetChecksum(Helpers.ReadFile("Inputs\\2017\\02.txt"));
+            var x = CorruptionChecksum.GetChecksum(Days.Helpers.ReadFile("Inputs\\2017\\02.txt"));
             Assert.Equal(34925, x);
         }
 
@@ -39,7 +39,7 @@ namespace Tests._2017
         [Fact]
         public void SecondStarSolution()
         {
-            var x = CorruptionChecksum.GetEvenChecksum(Helpers.ReadFile("Inputs\\2017\\02.txt"));
+            var x = CorruptionChecksum.GetEvenChecksum(Days.Helpers.ReadFile("Inputs\\2017\\02.txt"));
             Assert.Equal(221, x);
         }
     }
