@@ -1,62 +1,51 @@
-﻿namespace Days
+﻿namespace Days._2017
 {
     public static class MemoryReallocation
     {
         public static int GetCyclesBeforeConfiguration(string sample)
         {
-            if (States == null) States = GetMemoryBank(sample);
-
-            return States.Count - 1;
+            return GetMemoryBank(sample.Format()).Count - 1;
         }
 
         public static int GetCyclesInfiniteLoop(string sample)
         {
-
-            if (States == null) States = GetMemoryBank(sample);
-            var test = States.Where(x => x.State.Equals(States.Last().State));
+            var states = GetMemoryBank(sample.Format());
+            var test = states.Where(x => Enumerable.SequenceEqual(x.State, states.Last().State));
 
             return test.Last().Cycle - test.First().Cycle;
         }
         
-        private static List<(int Cycle, string State)> GetMemoryBank(string sample)
+        private static List<(int Cycle, int[] State)> GetMemoryBank(int[] MB)
         {
-            var memoryBlocks = sample
-                   .Split(new string[] { "\t", " " }, StringSplitOptions.RemoveEmptyEntries)
-                   .Select(int.Parse).ToArray();
-
-            List<(int Cycle, string State)> states = new();
             int cycles = 0;
-            int lengthMB = memoryBlocks.Length;
+            int lengthMB = MB.Length;
+            List<(int Cycle, int[] State)> states = new() {};
 
             do
             {
-                states.Add((cycles, string.Join("", memoryBlocks)));
-                int max = memoryBlocks.Max();
-                int index = Array.IndexOf(memoryBlocks, max);
+                states.Add((cycles, MB.ToArray()));
+                int max = MB.Max();
+                int start = Array.IndexOf(MB, max);
 
-                memoryBlocks[index] = 0;
+                MB[start] = 0;
 
-                for (int i = 1; i <= max; i++)
+                int remainder = max % lengthMB;
+                for (int i = 1; i <= lengthMB; i++)
                 {
-                    if (index + i < lengthMB)
-                        memoryBlocks[index + i]++;
-                    else
-                        memoryBlocks[(index + i) % lengthMB]++;
+                    MB[(start + i) % lengthMB] += max / lengthMB + ((remainder > 0) ? 1 : 0);
+                    remainder--;
                 }
 
                 cycles++;
             }
-            while (!states.Any(x => x.State.Equals(string.Join("", memoryBlocks))));
-            states.Add((cycles, string.Join("", memoryBlocks)));            
+            while (!states.Any(x => Enumerable.SequenceEqual(x.State, MB)));
+            states.Add((cycles, MB));
 
             return states;
         }
 
-        private static List<(int Cycle, string State)> _states;
-        private static List<(int Cycle, string State)> States
-        {
-            get { return _states; }
-            set { _states = value; }
-        }
+        private static int[] Format(this string banks)
+            => banks.Split(new string[] { "\t", " " }, StringSplitOptions.RemoveEmptyEntries)
+                   .Select(int.Parse).ToArray();
     }
 }
