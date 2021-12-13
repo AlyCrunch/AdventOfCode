@@ -16,12 +16,7 @@ namespace Days._2021
             var (paper, fold) = FormatDatas(datas);
             var nbFolds = (maxFold > fold.Count() || maxFold == -1) ? fold.Count() : maxFold;
 
-            for (int i = 0; i < nbFolds; i++)
-            {
-                paper = Fold(paper, fold.ElementAt(i));
-            }
-
-            return paper;
+            return fold.Take(nbFolds).Aggregate(paper, (p, f) => p.Fold(f));
         }
 
         public static string[] GetCode(string[] data)
@@ -35,22 +30,21 @@ namespace Days._2021
 
         }
 
-        public static HashSet<(int x, int y)> Fold(HashSet<(int x, int y)> paper, (char dir, int value) fold)
+        public static HashSet<(int x, int y)> Fold(this HashSet<(int x, int y)> paper, (char dir, int value) fold)
         {
+            var lambdaWhere = new Func<(int x, int y), bool>(x => x.x > fold.value);
+            var lambdaSelect = new Func<(int x, int y), (int x, int y)>(x => (Math.Abs(x.x - fold.value * 2), x.y));
             if (fold.dir == 'y')
             {
-                var folding = paper.ToList().Where(x => x.y > fold.value)
-                    .Select(x => (x.x, Math.Abs(x.y - fold.value * 2)));
-                paper.RemoveWhere(x => x.y > fold.value);
-                paper.UnionWith(folding);
+                lambdaWhere = new Func<(int x, int y), bool>(x => x.y > fold.value);
+                lambdaSelect = new Func<(int x, int y), (int x, int y)>(x => (x.x, Math.Abs(x.y - fold.value * 2)));
             }
-            else
-            {
-                var folding = paper.ToList().Where(x => x.x > fold.value)
-                    .Select(x => (Math.Abs(x.x - fold.value * 2), x.y));
-                paper.RemoveWhere(x => x.x > fold.value);
-                paper.UnionWith(folding);
-            }
+
+            var folding = paper.ToList().Where(lambdaWhere)
+                .Select(lambdaSelect);
+            paper.RemoveWhere(new Predicate<(int x, int y)>(lambdaWhere));
+            paper.UnionWith(folding);
+
             return paper;
         }
 
