@@ -1,4 +1,5 @@
 ﻿using Days._2021;
+using System.Linq;
 using Xunit;
 
 namespace Tests._2021
@@ -26,7 +27,7 @@ namespace Tests._2021
             "CC -> N",
             "CN -> C"
         };
-
+        
         [Fact]
         public void FirstStarExample()
         {
@@ -43,14 +44,14 @@ namespace Tests._2021
         [Fact]
         public void SecondStarExample()
         {
-            Assert.Equal(1588, ExtendedPolymerization.GetSubstractMostAndLeastCommon(test, 40));
+            Assert.Equal(2188189693529, ExtendedPolymerization.GetSubstractMostAndLeastCommon(test, 40));
         }
 
         [Fact]
         public void SecondStarSolution()
         {
             var dataset = Days.Helpers.ReadFile("Inputs\\2021\\14.txt");
-            Assert.Equal(3306, ExtendedPolymerization.GetSubstractMostAndLeastCommon(dataset, 40));
+            Assert.Equal(3760312702877, ExtendedPolymerization.GetSubstractMostAndLeastCommon(dataset, 40));
         }
     }
 }
