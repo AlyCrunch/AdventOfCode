@@ -1,4 +1,4 @@
-﻿namespace Days
+﻿namespace Days._2017
 {
     public static class KnotHash
     {
@@ -34,7 +34,7 @@
             return Values[finalLength] * Values[finalLength + 1];
         }
 
-        static private int GetKnotHash(int length, string input)
+        static public int GetKnotHash(int length, string input)
         {
             List<int> RevertSizes = input.Split(",").Select(x => int.Parse(x)).ToList();
             int[] Values = Enumerable.Range(0, length + 1).ToArray();
