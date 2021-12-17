@@ -2,132 +2,86 @@
 {
     public static class PacketDecoder
     {
-        private static readonly Dictionary<char, string> hex2bin = new()
-        {
-            { '0', "0000" },
-            { '1', "0001" },
-            { '2', "0010" },
-            { '3', "0011" },
-            { '4', "0100" },
-            { '5', "0101" },
-            { '6', "0110" },
-            { '7', "0111" },
-            { '8', "1000" },
-            { '9', "1001" },
-            { 'A', "1010" },
-            { 'B', "1011" },
-            { 'C', "1100" },
-            { 'D', "1101" },
-            { 'E', "1110" },
-            { 'F', "1111" }
-        };
-        private static readonly Dictionary<string, char> bin2hex = new()
-        {
-            { "0000", '0' },
-            { "0001", '1' },
-            { "0010", '2' },
-            { "0011", '3' },
-            { "0100", '4' },
-            { "0101", '5' },
-            { "0110", '6' },
-            { "0111", '7' },
-            { "1000", '8' },
-            { "1001", '9' },
-            { "1010", 'A' },
-            { "1011", 'B' },
-            { "1100", 'C' },
-            { "1101", 'D' },
-            { "1110", 'E' },
-            { "1111", 'F' }
-        };
-
         public static int GetSumVersions(string v)
             => GetAllPackets(HexToBinary(v)).GetSumVersion;
-        //000000000111111111222222222233333333334444444444555
-        //01234567890123456789012345678901234567890123456789012
-        //VVVTTTAAAAABBBBBCCCCC                                       (4)
-        //VVVTTTILLLLLLLLLLLAAAAAAAAAAABBBBBBBBBBBCCCCCCCCCCC       1 (not 4)
-        //VVVTTTILLLLLLLLLLLLLLLAAAAAAAAAAABBBBBBBBBBBBBBBB         0 (not 4)
-        // V = Version
-        // T = Type 4 => read packet / type != 4 subpacket
-        // if type 4 => groups of 5 bits, start with 1 if !last / 0 if last
-        // if type != 4
-        // I = Length Type ID (0 = 15 bits=> length(L) of sum sub packet)
-        //                    (1 = 11 bits=> 11bits of subpackets n times (L))
-        // L = 15/11 bits represent the length or count 
-        // ABCD.. subpackets
-        public static Packet GetAllPackets(string binary)
+        public static Packet GetAllPackets(Queue<char> bits)
         {
             Packet packet = new();
-            packet.source = binary;
-            packet.version = bin2hex[ToBits(binary[0..3])] - '0';
-            packet.type = bin2hex[ToBits(binary[3..6])] - '0';
+            packet.version = BinaryToInt(bits.DequeueChunk(3));
+            packet.type = BinaryToInt(bits.DequeueChunk(3));
             switch (packet.type)
             {
                 case 4:
-                    foreach (var group in binary[6..].Select((c, i) => new { Key = i / 5, Value = c }).GroupBy(x => x.Key, x => x.Value))
+                    do
                     {
-                        packet.value += string.Join("", group)[1..];
-                        if (group.ElementAt(0) == '0')
-                            break;
+                        var litteral = bits.DequeueChunk(5).ToArray();
+                        packet.value.AddRange(litteral[1..]);
+                        if (litteral[0] == '0') break;
                     }
-                    packet.rest = packet.source.Replace(packet.value, "");
+                    while (true);
+                    packet.rest = bits.ToList();
                     break;
                 default:
-                    packet.isContainingSubpackets = binary[6] == '1';
-                    try
-                    {
-                        packet.length = Convert.ToInt32(binary[7..(7 + packet.GetLengthSize)], 2);
-                    }
-                    catch
-                    {
-                        throw new Exception($"{binary}[7..{packet.GetLengthSize}]");
-                    }
+                    packet.isNumberOfSub = bits.Dequeue() == '1';
+                    packet.length = BinaryToInt(bits.DequeueChunk(packet.GetLengthSize));
 
-                    if (packet.isContainingSubpackets)
+                    if (packet.isNumberOfSub)
                     {
-                        foreach (var group in binary[18..].Select((c, i) => new { Key = i / 11, Value = c })
-                            .GroupBy(x => x.Key, x => x.Value).Take(packet.length))
+                        for (int i = 0; i < packet.length; i++)
                         {
-                            packet.SubPackets.Add(GetAllPackets(string.Join("", group)));
+                            packet.rest = bits.ToList();
+                            var subpacket = GetAllPackets(new Queue<char>(packet.rest));
+                            packet.subPackets.Add(subpacket);
+                            packet.rest = subpacket.rest.ToList();
                         }
                     }
                     else
                     {
-                        string substring = binary[22..(22 + packet.length)];
+                        var subPackets = bits.DequeueChunk(packet.length);
                         do
                         {
-                            var subpacket = GetAllPackets(substring);
-                            packet.SubPackets.Add(subpacket);
-                            substring = subpacket.rest;
+                            var subpacket = GetAllPackets(new Queue<char>(subPackets));
+                            packet.subPackets.Add(subpacket);
+                            subPackets = subpacket.rest.ToList();
                         }
-                        while (substring.Length >= packet.length);
+                        while (subPackets.Any());
                     }
                     break;
             }
             return packet;
         }
 
-        private static string ToBits(string str)
-            => str.PadLeft(4, '0');
+        private static int BinaryToInt(IEnumerable<char> bits)
+            => Convert.ToInt32(string.Join("", bits).PadLeft(4, '0'), 2);
 
-        public static string HexToBinary(string str)
-            => str.Aggregate("", (bits, c)
-                => bits + hex2bin[c]);
+        public static Queue<char> HexToBinary(string str)
+            => new(str.Select(c => Convert.ToString(Convert.ToInt32(c.ToString(), 16), 2).PadLeft(4, '0')).SelectMany(x => x));
+            
         public class Packet
         {
             public int version;
             public int type;
-            public bool isContainingSubpackets;
+            public bool isNumberOfSub;
             public int length;
-            public List<Packet> SubPackets = new();
-            public string value = string.Empty;
-            public string rest = string.Empty;
-            public string source = string.Empty;
+            public List<Packet> subPackets = new();
+            public List<char> value = new();
+            public List<char> rest = new();
             public int GetLengthSize
-                => (isContainingSubpackets) ? 11 : 15;
+                => (isNumberOfSub) ? 11 : 15;
             public int GetSumVersion
-                => version + SubPackets.Sum(x => x.GetSumVersion);
+                => version + subPackets.Sum(x => x.GetSumVersion);
+            public int GetNumber
+                => value.Any() ? BinaryToInt(value) : 0 + subPackets.Sum(x => x.GetNumber);
+        }
+    }
+    public static class QueueExtensions
+    {
+        public static IEnumerable<T> DequeueChunk<T>(this Queue<T> queue, int chunkSize)
+        {
+            for (int i = 0; i < chunkSize && queue.Count > 0; i++)
+            {
+                yield return queue.Dequeue();
+            }
         }
     }
 }
