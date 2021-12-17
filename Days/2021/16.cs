@@ -4,10 +4,13 @@
     {
         public static long GetSumVersions(string v)
             => GetAllPackets(HexToBinary(v)).GetSumVersion;
+        public static long GetEvaluationExpression(string v)
+        => GetAllPackets(HexToBinary(v)).GetValue;
+
         public static Packet GetAllPackets(Queue<char> bits)
         {
             Packet packet = new(bits.ToList(), BinaryToInt(bits.DequeueChunk(3)), BinaryToInt(bits.DequeueChunk(3)));
-            
+
             switch (packet.type)
             {
                 case 4:
@@ -56,7 +59,7 @@
 
         public static Queue<char> HexToBinary(string str)
             => new(str.Select(c => Convert.ToString(Convert.ToInt64(c.ToString(), 16), 2).PadLeft(4, '0')).SelectMany(x => x));
-            
+
         public class Packet
         {
             public long version;
@@ -71,8 +74,38 @@
                 => (isNumberOfSub) ? 11 : 15;
             public long GetSumVersion
                 => version + subPackets.Sum(x => x.GetSumVersion);
-            public long GetNumber
-                => value.Any() ? BinaryToInt(value) : 0 + subPackets.Sum(x => x.GetNumber);
+
+            public long GetSum
+                => subPackets.Sum(x => x.GetValue);
+            public long GetProduct
+                => subPackets.Aggregate((long)1, (p, x) => p * x.GetValue);
+
+            public long GetMin
+                => (subPackets.Any()) ? subPackets.Min(x => x.GetValue) : long.MaxValue;
+            public long GetMax
+                => (subPackets.Any()) ? subPackets.Max(x => x.GetValue) : long.MinValue;
+
+            public long GetGreater
+                => (subPackets.First().GetValue > subPackets.Skip(1).First().GetValue) ? 1 : 0;
+            public long GetLess
+                => (subPackets.First().GetValue < subPackets.Skip(1).First().GetValue) ? 1 : 0;
+            public long GetEqual
+                => (subPackets.First().GetValue == subPackets.Skip(1).First().GetValue) ? 1 : 0;
+
+            public long GetValue
+                => type switch
+                {
+                    0 => GetSum,
+                    1 => GetProduct,
+                    2 => GetMin,
+                    3 => GetMax,
+                    4 => BinaryToInt(value),
+                    5 => GetGreater,
+                    6 => GetLess,
+                    7 => GetEqual,
+                    _ => throw new Exception("The ID type is invalid : " + type + " (1-7)")
+                };
+
             public Packet(List<char> source, long version, long type)
             {
                 this.version = version;

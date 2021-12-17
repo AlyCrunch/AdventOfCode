@@ -26,11 +26,22 @@ namespace Tests._2021
         [Fact]
         public void SecondStarExample()
         {
+
+            Assert.Equal(3, PacketDecoder.GetEvaluationExpression("C200B40A82"));
+            Assert.Equal(54, PacketDecoder.GetEvaluationExpression("04005AC33890"));
+            Assert.Equal(7, PacketDecoder.GetEvaluationExpression("880086C3E88112"));
+            Assert.Equal(9, PacketDecoder.GetEvaluationExpression("CE00C43D881120"));
+            Assert.Equal(1, PacketDecoder.GetEvaluationExpression("D8005AC2A8F0"));
+            Assert.Equal(0, PacketDecoder.GetEvaluationExpression("F600BC2D8F"));
+            Assert.Equal(0, PacketDecoder.GetEvaluationExpression("9C005AC2F8F0"));
+            Assert.Equal(1, PacketDecoder.GetEvaluationExpression("9C0141080250320F1802104A08"));
         }
 
         [Fact]
         public void SecondStarSolution()
         {
+            var dataset = Days.Helpers.ReadSingleLineFile("Inputs\\2021\\16.txt");
+            Assert.Equal(10185143721112, PacketDecoder.GetEvaluationExpression(dataset));
         }
     }
 }
