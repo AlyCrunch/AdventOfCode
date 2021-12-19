@@ -11,22 +11,25 @@ namespace Tests._2021
         [Fact]
         public void FirstStarExample()
         {
+            Assert.Equal(45, TrickShot.GetTheHighestY(test));
         }
 
         [Fact]
         public void FirstStarSolution()
         {
-            //var dataset = Days.Helpers.ReadFile("Inputs\\year\\day.txt");
+            Assert.Equal(4186, TrickShot.GetTheHighestY(dataset));
         }
 
         [Fact]
         public void SecondStarExample()
         {
+            Assert.Equal(112, TrickShot.GetTheHits(test));
         }
 
         [Fact]
         public void SecondStarSolution()
         {
+            Assert.Equal(2709, TrickShot.GetTheHits(dataset));
         }
     }
 }
