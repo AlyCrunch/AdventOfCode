@@ -2,6 +2,13 @@
 {
     public static class SnailFish
     {
+        public static int SumAllSnailfishNumbers(string[] datas)
+        {
+            var numbers = datas.Select(x => new Pair(x));
+            var first = numbers.First();
+            return numbers.Skip(1).Aggregate(first, (p, item) => Pair.Add(p, item))
+                .Magnitude();
+        }
 
         public class Pair
         {
@@ -37,12 +44,6 @@
                     throw new Exception($"left:{left},right:{right} : {e.Message}");
                 }
             }
-            public Pair(string left, string right)
-            {
-                (Left, LeftValue) = GetFormatValue(left);
-                (Right, RightValue) = GetFormatValue(right);
-            }
-
             public Pair(Pair left, Pair right)
             {
                 Left = left;
@@ -53,40 +54,46 @@
                 LeftValue = left;
                 RightValue = right;
             }
+            public Pair(){}
 
-
-            private (Pair? p, int? v) GetFormatValue(string value)
-            => value.Contains(',') ? (new Pair(value, this), null) : (null, int.Parse(value[..]));
-
-            public static Pair Split(int value)
+            private static Pair Split(int value)
                 => new(value / 2, value / 2 + value % 2);
-            public void Split(int value, bool isLeft)
+            public void TrySplit()
             {
-                var p = Split(value);
-                p.Parent = this;
-                if (isLeft)
+                if(LeftValue.HasValue && LeftValue >= 10)
+                {
+                    var p = Split(LeftValue.Value);
+                    LeftValue = null;
+                    p.Parent = this;
                     Left = p;
-                else
-                    Right = p;
-            }
+                }
+                else Left?.TrySplit();
 
+                if (RightValue.HasValue && RightValue >= 10)
+                {
+                    var p = Split(RightValue.Value);
+                    RightValue = null;
+                    p.Parent = this;
+                    Right = p;
+                }
+                else Right?.TrySplit();
+            }
             public void TryExplode()
             {
                 if (Depth > 4 && IsBothValue())
                 {
-                    var l = LeftValue.Value;
-                    var r = RightValue.Value;
+                    var l = LeftValue.GetValueOrDefault();
+                    var r = RightValue.GetValueOrDefault();
                     if (Parent is null) throw new Exception($"No parent found (source [{l},{r}]) : " + this.ToString());
                     if (Parent.LeftValue is not null)
                     {
-                        //throw new Exception("Parent Left value : " + Parent.LeftValue);
                         FindParentWherePairIsLeft(r);
                         Parent.LeftValue += l;
                         Parent.RightValue = 0;
                         Parent.Right = null;
 
                     }
-                    if (Parent.RightValue is not null)
+                    else if (Parent.RightValue is not null)
                     {
                         FindParentWherePairIsRight(l);
                         Parent.RightValue += r;
@@ -100,22 +107,45 @@
                     if (Right is not null) Right.TryExplode();
                 }
             }
-            //[[[[[9,8],1],2],3],4]
-            //[[3,[2,[1,[7,3]]]],[6,[5,[4,[3,2]]]]]
+
+            public static Pair Add(Pair first, Pair second)
+            {
+                var third = first + second;
+
+                while (third.IsValueGreaterThan10() || third.IsDepthOver4())
+                {
+                    third.TryExplode();
+                    third.TrySplit();
+                }
+
+                return third;
+            }
+
+            private (Pair? p, int? v) GetFormatValue(string value)
+            => value.Contains(',') ? (new Pair(value, this), null) : (null, int.Parse(value[..]));
             private void FindParentWherePairIsLeft(int value)
             {
-                if (Parent is null) return; //throw new Exception("No parent found : (value: " + value + ") " + this.ToString());
-
-                if (Parent.Left is not null && Parent.Left.Equals(this))
-                    AddToTheRightmost(value);
+                if (Parent is null) return; 
+                if (Parent.Left is not null && Parent.Left == this)
+                {
+                    if (Parent.Right is not null)
+                        Parent.Right.AddToTheLeftmost(value);
+                    else if (Parent.RightValue is not null)
+                        Parent.RightValue += value;
+                }
                 else
                     Parent.FindParentWherePairIsLeft(value);
             }
             private void FindParentWherePairIsRight(int value)
             {
-                if (Parent is null) return; //throw new Exception("No parent found : " + this.ToString());
-                if (Parent.Right is not null && Parent.Right.Equals(this))
-                    AddToTheLeftmost(value);
+                if (Parent is null) return;
+                if (Parent.Right is not null && Parent.Right == this)
+                {
+                    if (Parent.Left is not null)
+                        Parent.Left.AddToTheLeftmost(value);
+                    else if (Parent.LeftValue is not null)
+                        Parent.LeftValue += value;
+                }
                 else
                     Parent.FindParentWherePairIsRight(value);
             }
@@ -133,33 +163,75 @@
                 else
                     Left?.AddToTheLeftmost(value);
             }
+            private bool IsValueGreaterThan10()
+            {
+                if (LeftValue.HasValue && LeftValue.Value >= 10) return true;
+                if (RightValue.HasValue && RightValue.Value >= 10) return true;
+                bool left = false, right = false;
+                if (Left is not null) left = Left.IsValueGreaterThan10();
+                if (Right is not null) right = Right.IsValueGreaterThan10();
 
+                return left || right;
+            }
+            private bool IsDepthOver4()
+            {
+                if (Depth > 4) return true;
+                bool left = false, right = false;
+                if (Left is not null) left = Left.IsDepthOver4();
+                if (Right is not null) right = Right.IsDepthOver4();
+
+                return left || right;
+            }
             private bool IsBothValue()
                 => LeftValue.HasValue && RightValue.HasValue;
 
             public new string ToString()
                 => "[" + ((LeftValue is null) ? Left?.ToString() : $"{LeftValue}") + ","
                 + ((RightValue is null) ? Right?.ToString() : $"{RightValue}") + "]";
-
             public int Magnitude()
-                => ((LeftValue.HasValue) ? LeftValue * 3 : Left.Magnitude() * 3).Value +
-                    ((RightValue.HasValue) ? RightValue * 2 : Right.Magnitude() * 2).Value;
+                => (LeftValue.HasValue ? LeftValue * 3 : Left.Magnitude() * 3).Value +
+                    (RightValue.HasValue ? RightValue * 2 : Right.Magnitude() * 2).Value;
 
             public static Pair operator +(Pair l, Pair r)
                 => new(l, r);
-            public bool Equals(Pair? pair)
+            public static bool operator ==(Pair? l, Pair? r)
             {
-                if (this == null && pair == null)
+                if (l is null && r is null)
                 {
                     return true;
                 }
 
-                if (this != null && pair != null)
+                if (l is not null && r is not null)
+                {
+                    return l.LeftValue == r.LeftValue && l.RightValue == r.RightValue
+                    && l.Left == r.Left && l.Right == r.Right;
+                }
+
+                return false;
+            }
+            public static bool operator !=(Pair? l, Pair? r) => !(l == r);
+            public override bool Equals(object? obj)
+            {
+                if (obj is not Pair) return false;
+
+                Pair pair = (Pair)obj;
+
+                if (this is null && pair is null)
+                {
+                    return true;
+                }
+
+                if (this is not null && pair is not null)
                 {
                     return LeftValue == pair.LeftValue && RightValue == pair.RightValue
-                    && Left.Equals(pair.Left) && Right.Equals(pair.Right);
+                    && Left == pair.Left && Right == pair.Right;
                 }
+
                 return false;
+            }
+            public override int GetHashCode()
+            {
+                throw new NotImplementedException();
             }
         }
     }
