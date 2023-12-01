@@ -1,6 +1,6 @@
 ﻿namespace Days._2023
 {
-    public class Trebuchet
+    public static class Trebuchet
     {
         private static readonly Dictionary<string, string> LiteralDigits = new()
         {
@@ -31,20 +31,15 @@
             sum + int.Parse(row.First(c => char.IsDigit(c)).ToString() + row.Last(c => char.IsDigit(c))));
 
         public static int GetFirstLastDigitLiteralSum(IEnumerable<string> input)
-        {
-            var keywords = LiteralDigits.Keys.ToList();
-            return input.Aggregate(0, (sum, row) =>  
-                {
-                    var indexes = GetKeywordsIndexes(keywords, row);
-                    return sum + int.Parse(LiteralDigits[indexes.MinBy(x => x.index).key] + LiteralDigits[indexes.MaxBy(x => x.index).key]);
-                }            
-            );
-        }
+            => input.Sum(row => GetKeywordsIndexes(LiteralDigits.Keys.ToList(), row).GetNumberMinMax());
 
         private static IEnumerable<(int index, string key)> GetKeywordsIndexes(IEnumerable<string> keywords, string row)
             => keywords.Select(key => new List<(int index, string key)>(){
                 (row.IndexOf(key), key),
                 (row.LastIndexOf(key), key)
             }).SelectMany(i => i).Where(x => x.index != -1).Distinct();
+
+        private static int GetNumberMinMax(this IEnumerable<(int index, string key)> indexes)
+            => int.Parse(LiteralDigits[indexes.MinBy(x => x.index).key] + LiteralDigits[indexes.MaxBy(x => x.index).key]);
     }
 }
