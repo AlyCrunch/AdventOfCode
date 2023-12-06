@@ -42,7 +42,7 @@ namespace Tests._2023
         {
             var dataset = Days.Helpers.ReadFile("Inputs\\2023\\02.txt");
             var result = CubeConundrum.GetMinimumSetMultiplied(dataset);
-            Assert.Equal(2286, result);
+            Assert.Equal(72227, result);
         }
     }
 }
