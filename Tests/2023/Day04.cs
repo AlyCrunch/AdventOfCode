@@ -34,11 +34,16 @@ namespace Tests._2023
         [Fact]
         public void SecondStarExample()
         {
+            var result = Scratchcards.GetNumberCards(test);
+            Assert.Equal(30, result);
         }
 
         [Fact]
         public void SecondStarSolution()
         {
+            var dataset = Days.Helpers.ReadFile("Inputs\\2023\\04.txt");
+            var result = Scratchcards.GetNumberCards(dataset);
+            Assert.Equal(5329815, result);
         }
     }
 }
